@@ -99,7 +99,7 @@ LOCAL_C_INCLUDES_x86_64 += $(LOCAL_PATH)/simd
 LOCAL_SRC_FILES_mips += $(libjpeg_turbo_common_src_files_mips)
 LOCAL_SRC_FILES_mips64 += $(libjpeg_turbo_common_src_files_mips)
 
-LOCAL_CFLAGS += $(libjpeg_turbo_common_cflags)
+LOCAL_CFLAGS += $(libjpeg_turbo_common_cflags) -DJDCT_DEFAULT=JDCT_IFAST
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)
 
 ifneq (,$(TARGET_BUILD_APPS))
