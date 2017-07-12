@@ -4,7 +4,7 @@
  * This file was part of the Independent JPEG Group's software:
  * Copyright (C) 1997-2011, Thomas G. Lane, Guido Vollbeding.
  * libjpeg-turbo Modifications:
- * Copyright (C) 2010, D. R. Commander.
+ * Copyright (C) 2010, 2017, D. R. Commander.
  * For conditions of distribution and use, see the accompanying README.ijg
  * file.
  *
@@ -1177,7 +1177,6 @@ transpose_critical_parameters (j_compress_ptr dstinfo)
  * We try to adjust the Tags ExifImageWidth and ExifImageHeight if possible.
  */
 
-#if JPEG_LIB_VERSION >= 70
 LOCAL(void)
 adjust_exif_parameters (JOCTET *data, unsigned int length,
                         JDIMENSION new_width, JDIMENSION new_height)
@@ -1327,7 +1326,6 @@ adjust_exif_parameters (JOCTET *data, unsigned int length,
     offset += 12;
   } while (--number_of_tags);
 }
-#endif
 
 
 /* Adjust output image parameters as needed.
@@ -1384,7 +1382,7 @@ jtransform_adjust_parameters (j_decompress_ptr srcinfo,
   /* Correct the destination's image dimensions as necessary
    * for rotate/flip, resize, and crop operations.
    */
-#if JPEG_LIB_VERSION >= 70
+#if JPEG_LIB_VERSION >= 80
   dstinfo->jpeg_width = info->output_width;
   dstinfo->jpeg_height = info->output_height;
 #endif
@@ -1395,14 +1393,14 @@ jtransform_adjust_parameters (j_decompress_ptr srcinfo,
   case JXFORM_TRANSVERSE:
   case JXFORM_ROT_90:
   case JXFORM_ROT_270:
-#if JPEG_LIB_VERSION < 70
+#if JPEG_LIB_VERSION < 80
     dstinfo->image_width = info->output_height;
     dstinfo->image_height = info->output_width;
 #endif
     transpose_critical_parameters(dstinfo);
     break;
   default:
-#if JPEG_LIB_VERSION < 70
+#if JPEG_LIB_VERSION < 80
     dstinfo->image_width = info->output_width;
     dstinfo->image_height = info->output_height;
 #endif
@@ -1421,14 +1419,21 @@ jtransform_adjust_parameters (j_decompress_ptr srcinfo,
       GETJOCTET(srcinfo->marker_list->data[5]) == 0) {
     /* Suppress output of JFIF marker */
     dstinfo->write_JFIF_header = FALSE;
-#if JPEG_LIB_VERSION >= 70
     /* Adjust Exif image parameters */
+#if JPEG_LIB_VERSION >= 80
     if (dstinfo->jpeg_width != srcinfo->image_width ||
         dstinfo->jpeg_height != srcinfo->image_height)
       /* Align data segment to start of TIFF structure for parsing */
       adjust_exif_parameters(srcinfo->marker_list->data + 6,
         srcinfo->marker_list->data_length - 6,
         dstinfo->jpeg_width, dstinfo->jpeg_height);
+#else
+    if (dstinfo->image_width != srcinfo->image_width ||
+        dstinfo->image_height != srcinfo->image_height)
+      /* Align data segment to start of TIFF structure for parsing */
+      adjust_exif_parameters(srcinfo->marker_list->data + 6,
+        srcinfo->marker_list->data_length - 6,
+        dstinfo->image_width, dstinfo->image_height);
 #endif
   }
 
@@ -1571,9 +1576,12 @@ jcopy_markers_setup (j_decompress_ptr srcinfo, JCOPY_OPTION option)
     jpeg_save_markers(srcinfo, JPEG_COM, 0xFFFF);
   }
   /* Save all types of APPn markers iff ALL option */
-  if (option == JCOPYOPT_ALL) {
-    for (m = 0; m < 16; m++)
+  if (option == JCOPYOPT_ALL || option == JCOPYOPT_ALL_EXCEPT_ICC) {
+    for (m = 0; m < 16; m++) {
+      if (option == JCOPYOPT_ALL_EXCEPT_ICC && m == 2)
+        continue;
       jpeg_save_markers(srcinfo, JPEG_APP0 + m, 0xFFFF);
+    }
   }
 #endif /* SAVE_MARKERS_SUPPORTED */
 }
