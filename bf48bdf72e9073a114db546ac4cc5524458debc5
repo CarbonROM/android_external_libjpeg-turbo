@@ -1,0 +1,4 @@
+{
+  "pushCert": "certificate version 0.1\npusher C249223A 1499863290 -0500\npushee ssh://review.carbonrom.org:29418/CarbonROM/android_external_libjpeg-turbo\nnonce 1499863919-6CF1C2DEDDB4F564DF342F92AFA7C4DED1DCDE6E\n\n0000000000000000000000000000000000000000 ded0c908069e8e1c31c0df34ff7ac4a7f756ca28 refs/for/cr-5.1%topic\u003dmisc-external\n-----BEGIN PGP SIGNATURE-----\n\niQEcBAABAgAGBQJZZhj6AAoJEJ8pB5zCSSI6HngH/R+Rdl1zcn7qBkYTHhpHZpM2\n2pRif2UclmlFKOmlu7MmSVm9HHYb5WGnjx8fWjHnuTE4opA2lYSqNaFFABnqAOMX\na/roSXd9GDYMclCYsambdbtaAxSpAIMjrLnjB1Rhhldt01aigW5sziwX/GqCcD5h\nbjlX4MgdUmAEepLFgs1+mUQdcdCvZDLn6sP0p5z/5GWgJzRsqLjfnHppNpx+PGrJ\nvMNap1ZAH0Qx1N5I2UxvArKexIRWA2wZhX1VtyUlaLlil6XcBj4NCiwshn/r0MYE\nO7dmGyd9wkxWbrQHovY7fZ3wdH9M2ezLQujjyD0IjlrJON7onZRRe0zFEsasvV4\u003d\n\u003dMxx0\n-----END PGP SIGNATURE-----\n",
+  "comments": []
+}
